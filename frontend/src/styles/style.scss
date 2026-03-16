@@ -1,0 +1,66 @@
+@font-face {
+  font-family: Roboto;
+  src: url("../static/fonts/Roboto.woff") format("woff"), url("../static/fonts/Roboto.woff2")  format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.btn-group {
+  .dropdown-toggle::after {
+    display: none !important;
+  }
+}
+
+.arrow {
+  transition: transform 0.25s ease;
+}
+
+.dropdown-toggle[aria-expanded="true"] {
+  .arrow {
+    transform: rotate(90deg);
+  }
+}
+
+.layout {
+  margin-right: 60px;
+}
+
+.title {
+  color: #052C65;
+  margin-top: 100px;
+}
+
+.title-post {
+  color: #052C65 !important;
+}
+
+.main {
+
+  .navbar {
+    margin-bottom: 140px;
+    .btn {
+      width: 100px;
+    }
+  }
+
+}
+
+.operations-view {
+  .table {
+    table-layout: fixed;
+    width: 100%;
+    thead {
+      th {
+        color: #052C65;
+        font-size: 16px;
+        text-transform: none;
+        font-weight: bold;
+        text-transform: lowercase;
+      }
+    }
+  }
+}

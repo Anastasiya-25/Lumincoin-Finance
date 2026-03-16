@@ -1,0 +1,83 @@
+<section class="operations-view">
+    <h1 class="title mb-xxl-5">Доходы и расходы</h1>
+    <div class="d-flex gap-3 mb-3">
+        <a href="/operation/create" class="btn btn-success">Создать доход</a>
+        <a href="/operation/create" class="btn btn-danger">Создать расход</a>
+    </div>
+    <nav class="navbar navbar-light mb-4">
+        <form class="container-fluid justify-content-start gap-3 flex-wrap align-items-center">
+            <button class="btn btn-outline-secondary active" type="button">Сегодня</button>
+            <button class="btn btn-outline-secondary" type="button">Неделя</button>
+            <button class="btn btn-outline-secondary" type="button">Месяц</button>
+            <button class="btn btn-outline-secondary" type="button">Год</button>
+            <button class="btn btn-outline-secondary" type="button">Все</button>
+            <button class="btn btn-outline-secondary" type="button">Интервал</button>
+            <div class="d-flex gap-3">
+                <p class="mb-0">с <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
+                <p class="mb-0">по <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
+            </div>
+        </form>
+    </nav>
+    <div class="container-fluid">
+        <div class="table-responsive">
+            <table class="table w-100 table-hover align-middle border-top border-secondary-subtle">
+                <thead class="text-uppercase text-secondary" style="color: #052C65;">
+                <tr>
+                    <th scope="col" class="py-3">№ операции</th>
+                    <th scope="col" class="py-3">Тип</th>
+                    <th scope="col" class="py-3">Категория</th>
+                    <th scope="col" class="py-3">Сумма</th>
+                    <th scope="col" class="py-3">Дата</th>
+                    <th scope="col" class="py-3">Комментарий</th>
+                    <th scope="col" class="py-3"></th>
+                </tr>
+                </thead>
+                <tbody class="border-top-0">
+                <tr>
+                    <th scope="row">1</th>
+                    <td class="text-success">доход</td>
+                    <td>Зарплата</td>
+                    <td>500 $</td>
+                    <td>11.09.2022</td>
+                    <td></td>
+                    <td class="text-end">
+                        <a href="/operation/edit?id=" class="text-secondary me-2"><i class="fa-solid fa-pen"></i></a>
+                        <a type="button" class="text-secondary" data-bs-toggle="modal" data-bs-target="#deleteModal"><i
+                                class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td class="text-danger">расход</td>
+                    <td>Жилье</td>
+                    <td>2 500 $</td>
+                    <td>12.09.2022</td>
+                    <td></td>
+                    <td class="text-end">
+                        <a href="/operation/edit?id=" class="text-secondary me-2"><i class="fa-solid fa-pen"></i></a>
+                        <a type="button" class="text-secondary" data-bs-toggle="modal" data-bs-target="#deleteModal"><i
+                                class="fa-solid fa-trash-can"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow">
+                <div class="modal-body text-center p-5">
+                    <h2 class="h4 mb-4" style="color: #052C65;">Вы действительно хотите удалить операцию?</h2>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" id="confirm-delete" class="btn btn-success px-4">Да, удалить
+                        </button>
+                        <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">Не удалять
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

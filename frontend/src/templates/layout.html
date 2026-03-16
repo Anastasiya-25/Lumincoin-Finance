@@ -1,0 +1,52 @@
+<div class="layout-content d-flex">
+    <div class="layout d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+        <div class="d-flex justify-content-center mt-4">
+            <a href="javascript: void(0)" class="d-flex align-items-center mb-3 mb-md-0 link-dark text-decoration-none">
+                <img src="/images/logo.png" class="" alt="Логотип">
+            </a>
+        </div>
+        <hr>
+        <div class="d-flex flex-column justify-content-between align-items-center" style="height: 100vh;">
+            <div class="mb-4">
+                <ul class="nav nav-pills flex-column mb-1 mt-lg-5">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link active" aria-current="page">
+                            <i class="fa-solid fa-house me-2"></i>
+                            Главная
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/operations/view" class="nav-link link-dark">
+                            <i class="fa-solid fa-money-bill-1 me-2"></i>
+                            Доходы & Расходы
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="btn-group position-relative w-100">
+                    <button type="button" class="btn dropdown-toggle d-flex justify-content-between align-items-center "
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Категории
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        <li><a class="dropdown-item" href="/income/view">Доходы</a></li>
+                        <li><a class="dropdown-item" href="/expense/view">Расходы</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-auto text-start w-100">
+                <div id="balance" class="text-start">
+                    Баланс: <a class="link-primary text-decoration-none" id="balance-amount"><span> $</span></a>
+                </div>
+                <hr>
+                <a href="#" class="d-flex align-items-center link-secondary text-decoration-none">
+                    <img src="/images/icon.png" class="me-2" alt="Иконка">
+                    <p id="user" class="mb-0 text-start">User name</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content"></div>
+</div>

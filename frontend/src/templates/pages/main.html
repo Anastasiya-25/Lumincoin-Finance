@@ -1,0 +1,32 @@
+<section class="main">
+    <h1 class="title mb-xxl-5">Главная</h1>
+    <nav class="navbar navbar-light">
+        <form class="container-fluid justify-content-start gap-3 flex-wrap align-items-center">
+            <button class="btn btn-outline-secondary active" type="button">Сегодня</button>
+            <button class="btn btn-outline-secondary" type="button">Неделя</button>
+            <button class="btn btn-outline-secondary" type="button">Месяц</button>
+            <button class="btn btn-outline-secondary" type="button">Год</button>
+            <button class="btn btn-outline-secondary" type="button">Все</button>
+            <button class="btn btn-outline-secondary" type="button">Интервал</button>
+            <div class="d-flex gap-3">
+                <p class="mb-0">с <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
+                <p class="mb-0">по <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
+            </div>
+        </form>
+    </nav>
+
+    <div class="charts charts-row d-flex gap-3">
+        <div class="chart-wrapper" style="width: 500px;">
+            <canvas id="chartIncome"></canvas>
+        </div>
+
+        <div class="vr" style="height: 500px; opacity: 0.2;"></div>
+
+        <div class="chart-wrapper" style="width: 500px;">
+            <canvas id="chartExpenses"></canvas>
+        </div>
+    </div>
+
+</section>
+<script src="../node_modules/chart.js" defer></script>
+<script src="../../components/main.js" defer></script>
