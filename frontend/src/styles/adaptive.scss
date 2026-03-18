@@ -1,0 +1,37 @@
+@media (min-width: 992px) {
+  .offcanvas-lg {
+    position: static;
+    visibility: visible;
+    transform: none;
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-content {
+    min-height: 100vh;
+  }
+  .operations-view {
+
+    .table {
+      table-layout: auto !important;
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      min-width: 600px;
+
+      thead th {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: lowercase;
+      }
+      tbody td {
+
+        white-space: nowrap;
+        padding: 12px 8px;
+      }
+    }
+  }
+}
+
+

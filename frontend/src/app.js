@@ -1,4 +1,5 @@
 import "./styles/style.scss";
+import "./styles/adaptive.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {Router} from "./router.js";

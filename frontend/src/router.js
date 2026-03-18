@@ -2,16 +2,16 @@ import {Main} from "./components/main.js";
 import {Login} from "./components/auth/login.js";
 import {SignUp} from "./components/auth/sign-up.js";
 import {Logout} from "./components/auth/logout.js";
-import {IncomeView} from "./components/income/view.js";
-import {ExpenseView} from "./components/expense/view.js";
+import {IncomeView} from "./components/income/income-view.js";
+import {ExpenseView} from "./components/expense/expense-view.js";
 import {IncomeDelete} from "./components/income/delete.js";
-import {IncomeCreate} from "./components/income/create.js";
-import {ExpenseCreate} from "./components/expense/create.js";
-import {IncomeEdit} from "./components/income/edit.js";
-import {ExpenseEdit} from "./components/expense/edit.js";
-import {OperationsView} from "./components/operations/view.js";
-import {OperationCreate} from "./components/operations/create.js";
-import {OperationEdit} from "./components/operations/edit.js";
+import {IncomeCreate} from "./components/income/income-create.js";
+import {ExpenseCreate} from "./components/expense/expense-create.js";
+import {IncomeEdit} from "./components/income/income-edit.js";
+import {ExpenseEdit} from "./components/expense/expense-edit.js";
+import {OperationsView} from "./components/operations/operation-view.js";
+import {OperationCreate} from "./components/operations/operation-create.js";
+import {OperationEdit} from "./components/operations/operation-edit.js";
 
 
 export class Router {
