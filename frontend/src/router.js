@@ -4,7 +4,6 @@ import {SignUp} from "./components/auth/sign-up.js";
 import {Logout} from "./components/auth/logout.js";
 import {IncomeView} from "./components/income/income-view.js";
 import {ExpenseView} from "./components/expense/expense-view.js";
-import {IncomeDelete} from "./components/income/delete.js";
 import {IncomeCreate} from "./components/income/income-create.js";
 import {ExpenseCreate} from "./components/expense/expense-create.js";
 import {IncomeEdit} from "./components/income/income-edit.js";
@@ -12,6 +11,7 @@ import {ExpenseEdit} from "./components/expense/expense-edit.js";
 import {OperationsView} from "./components/operations/operation-view.js";
 import {OperationCreate} from "./components/operations/operation-create.js";
 import {OperationEdit} from "./components/operations/operation-edit.js";
+import {AuthUtils} from "./utils/auth-utils.js";
 
 
 export class Router {
@@ -22,18 +22,14 @@ export class Router {
         window.addEventListener('popstate', this.activateRoute.bind(this));
 
         document.addEventListener('click', (e) => {
-            // Ищем ближайший тег <a> от элемента, на который кликнули
             const link = e.target.closest('a');
 
-            // Проверяем: это ссылка, она ведет на наш же сайт (не внешняя)
-            // и у нее нет атрибута target="_blank"
             if (link && link.href && link.origin === window.location.origin) {
-                e.preventDefault(); // Отменяем стандартную перезагрузку страницы
-                window.history.pushState({}, '', link.pathname); // Меняем URL без перезагрузки
-                this.activateRoute.bind(this); // Вызываем отрисовку новой страницы
+                e.preventDefault();
+
+                this.open(link.pathname).then();
             }
         });
-
         this.routes = [
             {
                 route: '/',
@@ -43,16 +39,6 @@ export class Router {
                 load: () => {
                     new Main();
                 },
-                // scripts: [
-                //     'moment.min.js',
-                //     'moment-ru-locale.js',
-                //     //'moment.min.js.map',
-                //     'fullcalendar.js',
-                //     'fullcalendar-locale-ru.js'
-                // ],
-                // styles: [
-                //     'fullcalendar.css'
-                // ]
             },
             {
                 route: '/404',
@@ -66,13 +52,8 @@ export class Router {
                 filePathTemplate: '/templates/pages/auth/login.html',
                 useLayout: false,
                 load: () => {
-                    new Login();
+                    new Login(this);
                 },
-                // unload: () => {
-                //     document.body.classList.remove('login-page');
-                //     document.body.style.height = 'auto';
-                // },
-                // styles: ['icheck-bootstrap.min.css']
             },
             {
                 route: '/sign-up',
@@ -80,18 +61,13 @@ export class Router {
                 filePathTemplate: '/templates/pages/auth/sign-up.html',
                 useLayout: false,
                 load: () => {
-                    new SignUp();
+                    new SignUp(this);
                 },
-                // unload: () => {
-                //     document.body.classList.remove('register-page');
-                //     document.body.style.height = 'auto';
-                // },
-                // styles: ['icheck-bootstrap.min.css']
             },
             {
                 route: '/logout',
                 load: () => {
-                    new Logout();
+                    new Logout(this);
                 }
             },
             {
@@ -121,12 +97,6 @@ export class Router {
                     new IncomeEdit();
                 },
             },
-            // {
-            //     rout: '/income/delete',
-            //     load: () => {
-            //         new IncomeDelete();
-            //     },
-            // },
             {
                 route: '/expense/view',
                 title: 'Расходы',
@@ -184,8 +154,22 @@ export class Router {
         ];
     }
 
+    async open(route) {
+        window.history.pushState({}, '', route);
+        await this.activateRoute();
+    }
+
     async activateRoute() {
         const urlRoute = window.location.pathname;
+
+        const isAuthPage = urlRoute === '/login' || urlRoute === '/sign-up';
+
+        if (!AuthUtils.getAuthInfo(AuthUtils.accessTokenKey) && !AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey) && !isAuthPage) {
+            window.history.replaceState({}, '', '/login');
+            await this.activateRoute();
+            return;
+        }
+
         const newRoute = this.routes.find(item => item.route === urlRoute);
         if (newRoute) {
             if (newRoute.title) {
@@ -211,8 +195,7 @@ export class Router {
             }
         } else {
             console.log('Not route Found!');
-            //history.pushState({}, '', '/404');
-            window.location = '/404';
+            this.open('/404');
 
         }
     }
