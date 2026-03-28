@@ -28,6 +28,11 @@ export class Main {
             },
             options: {
                 responsive: true,
+                layout: {
+                    padding: {
+                        top: 40
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -37,7 +42,7 @@ export class Main {
                         color: '#290661',
                         font: {
                             size: 28
-                        }
+                        },
                     },
 
                 }

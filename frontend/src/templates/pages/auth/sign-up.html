@@ -7,46 +7,64 @@
                         <img class="mb-4" src="/images/logo.png" alt="logo">
                     </a>
                         <h1 class="title text-center mb-3 font-weight-normal">Создайте аккаунт</h1>
+                    <div id="common-error" class="error invalid-feedback text-center mb-3">Не удалось зарегистрировать пользователя</div>
                     <div class="form-label-group position-relative mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user fa text-secondary" aria-hidden="true"></i></span>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="Имя"/>
+                                <span id="name-error" class="error invalid-feedback">Заполните имя.</span>
                             </div>
-                        <span id="name-error" class="error invalid-feedback">Заполните имя.</span>
+
                     </div>
                     <div class="form-label-group position-relative mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user fa text-secondary" aria-hidden="true"></i></span>
                             <input type="text" class="form-control" name="last-name" id="last-name" placeholder="Фамилия"/>
+                            <span id="last-name-error" class="error invalid-feedback">Заполните фамилию.</span>
                         </div>
-                        <span id="last-name-error" class="error invalid-feedback">Заполните фамилию.</span>
+
                     </div>
                     <div class="form-label-group position-relative mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope fa text-secondary" aria-hidden="true"></i></span>
                             <input type="email" class="form-control" name="email" id="email" placeholder="Электронная почта"/>
+                            <span id="email-error" class="error invalid-feedback">Заполните электронную почту.</span>
                         </div>
-                        <span id="email-error" class="error invalid-feedback">Заполните электронную почту.</span>
+
                     </div>
                     <div class="form-label-group position-relative mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock fa text-secondary" aria-hidden="true"></i></span>
                             <input type="password" class="form-control" name="password" id="password" placeholder="Пароль"/>
+                            <span id="password-error" class="error invalid-feedback">Заполните пароль.</span>
                         </div>
-                        <span id="password-error" class="error invalid-feedback">Заполните пароль.</span>
+
                     </div>
                     <div class="form-label-group position-relative mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock fa text-secondary" aria-hidden="true"></i></span>
                             <input type="password" class="form-control" name="confirm" id="confirm" placeholder="Подтверждение пароля"/>
+                            <span id="confirm-error" class="error invalid-feedback">Повторите пароль.</span>
                         </div>
-                        <span id="password-repeat-error" class="error invalid-feedback">Повторите пароль.</span>
+
                     </div>
-                    <button class="btn btn-lg btn-primary w-100" type="submit">Войти</button>
+                    <button class="btn btn-lg btn-primary w-100" type="submit" id="sign-up-button">Войти</button>
                     <p class="mb-3 text-muted text-center">Уже есть аккаунт? <a href="/login">Войдите в систему</a>
                     </p>
                 </form>
             </div>
+        </div>
+    </div>
+    <div id="signup-success-popup" class="position-fixed top-0 start-0 w-100 h-100 d-none"
+         style="background: rgba(0,0,0,0.5); z-index: 1050;">
+        <div class="position-absolute top-50 start-50 translate-middle bg-white p-4 rounded-3 shadow-lg text-center"
+             style="max-width: 400px; width: 90%;">
+            <div class="mb-3">
+                <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+            </div>
+            <h3 class="mb-3">Успех!</h3>
+            <p class="text-muted mb-4">Вы успешно зарегистрировались в системе Lumincoin Finance.</p>
+            <button id="goto-login-btn" class="btn btn-primary w-100">Перейти к входу</button>
         </div>
     </div>
 </div>
