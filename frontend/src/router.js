@@ -130,7 +130,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationsView();
+                    new OperationsView(this);
                 },
             },
             {
@@ -156,7 +156,7 @@ export class Router {
 
     async open(route) {
         window.history.pushState({}, '', route);
-        await this.activateRoute();
+        return await this.activateRoute();
     }
 
     async activateRoute() {
@@ -164,10 +164,14 @@ export class Router {
 
         const isAuthPage = urlRoute === '/login' || urlRoute === '/sign-up';
 
-        if (!AuthUtils.getAuthInfo(AuthUtils.accessTokenKey) && !AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey) && !isAuthPage) {
+        const accessToken = AuthUtils.getAuthInfo(AuthUtils.accessTokenKey);
+        const refreshToken = AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey);
+
+        if (!accessToken && !refreshToken && !isAuthPage) {
+            // this.contentPageElement.innerHTML = '';
             window.history.replaceState({}, '', '/login');
-            await this.activateRoute();
-            return;
+            return await this.activateRoute();
+
         }
 
         const newRoute = this.routes.find(item => item.route === urlRoute);

@@ -29,7 +29,14 @@ module.exports = {
                 use: [
                     "style-loader",
                     "css-loader",
-                    "sass-loader",
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                quietDeps: true,
+                            },
+                        },
+                    },
                 ],
             },
             {
@@ -56,6 +63,9 @@ module.exports = {
                 {from: "./node_modules/bootstrap/dist/js/bootstrap.bundle.js", to: "js"},
                 // {from: "./src/components/popper/popper.min.js", to: "js"},
                 {from: "./src/static/images", to: "images"},
+                // {from: "./node_modules/vanillajs-datepicker/dist/css/datepicker-bs5.min.css", to: "css"},
+                // {from: "./node_modules/vanillajs-datepicker/dist/js/datepicker.min.js", to: "js"},
+                // {from: "./node_modules/vanillajs-datepicker/dist/js/locales/ru.js", to: "js"},
 
             ],
         }),

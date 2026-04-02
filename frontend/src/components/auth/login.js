@@ -38,7 +38,7 @@ export class Login {
         this.commonErrorElement.style.display = 'none';
         e.preventDefault();
         if (this.validateForm()) {
-            const result = await HttpUtils.request('/login', 'POST',
+            const result = await HttpUtils.request('/login', 'POST', false,
                 {
                     email: this.emailElement.value,
                     password: this.passwordElement.value,
