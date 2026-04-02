@@ -50,9 +50,7 @@ export class HttpUtils {
                         result.redirect = '/login';
                     }
                 }
-
             }
-
         }
         return result;
     }

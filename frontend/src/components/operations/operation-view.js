@@ -29,11 +29,9 @@ export class OperationsView {
             language: 'ru'
         });
 
-        // При клике на текстовую ссылку фокусим скрытый инпут — это откроет календарь
         fromLink.addEventListener('click', () => document.getElementById('dateFrom').focus());
         toLink.addEventListener('click', () => document.getElementById('dateTo').focus());
 
-        // Когда дата выбрана, обновляем текст в ссылке
         rangeElement.addEventListener('changeDate', (e) => {
             const input = e.target; //
             const fromInput = document.getElementById('dateFrom');
@@ -41,17 +39,13 @@ export class OperationsView {
             const fromLink = document.getElementById('dateFromLink');
             const toLink = document.getElementById('dateToLink');
 
-            // 1. Обновляем текст ссылки для пользователя
             const link = (input.id === 'dateFrom') ? fromLink : toLink;
             if (input.value) {
                 const date = new Date(input.value);
                 link.innerText = date.toLocaleDateString('ru-RU');
             }
 
-            // 2. Логируем для отладки (откройте консоль F12 и посмотрите сюда!)
             console.log('Выбран интервал:', fromInput.value, '—', toInput.value);
-
-            // 3. Запускаем проверку и обновление
             this.checkIntervalAndRefresh();
         });
     }
@@ -63,15 +57,9 @@ export class OperationsView {
         // Находим кнопку "Интервал"
         const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
 
-        // Получаем значения из скрытых инпутов, которые заполнил Datepicker
         const from = fromInput.value;
         const to = toInput.value;
-
-        // ЛОГИКА:
-        // 1. Проверяем, активен ли режим интервала (есть класс 'active')
-        // 2. Проверяем, что обе даты выбраны (строки не пустые)
         if (intervalBtn && intervalBtn.classList.contains('active') && from && to) {
-            // Вызываем загрузку данных с сервера
             this.getOperations('interval', from, to).then();
         }
     }
@@ -85,10 +73,8 @@ export class OperationsView {
                 const period = button.getAttribute('data-period');
 
                 if (period === 'interval') {
-                    // ПРОВЕРКА: если даты уже есть, сразу обновляем
                     this.checkIntervalAndRefresh();
                 } else {
-                    // Для обычных периодов (сегодня, неделя и т.д.)
                     this.getOperations(period).then();
                 }
             });
