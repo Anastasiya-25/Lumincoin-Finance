@@ -12,17 +12,22 @@ import {OperationsView} from "./components/operations/operation-view.js";
 import {OperationCreate} from "./components/operations/operation-create.js";
 import {OperationEdit} from "./components/operations/operation-edit.js";
 import {AuthUtils} from "./utils/auth-utils.js";
+import {SidebarUtils} from "./utils/sidebar-utils.js";
 
 
 export class Router {
     constructor() {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
+        this.isInitialLoad = true;
         window.addEventListener('DOMContentLoaded', this.activateRoute.bind(this));
         window.addEventListener('popstate', this.activateRoute.bind(this));
 
         document.addEventListener('click', (e) => {
             const link = e.target.closest('a');
+            if (e.target.closest('[data-bs-toggle="dropdown"]')) {
+                return;
+            }
 
             if (link && link.href && link.origin === window.location.origin) {
                 e.preventDefault();
@@ -154,6 +159,35 @@ export class Router {
         ];
     }
 
+    updateMenu(urlRoute) {
+        const menuLinks = document.querySelectorAll('.nav-link, .dropdown-item');
+        const categoryButton = document.querySelector('.dropdown-toggle');
+        const activeLink = document.querySelector('.nav-link.active');
+
+        if (activeLink && activeLink.getAttribute('href') === urlRoute) {
+            return;
+        }
+
+        menuLinks.forEach(link => {
+            link.classList.remove('active');
+            link.classList.add('link-dark');
+
+            if (link.getAttribute('href') === urlRoute) {
+                link.classList.add('active');
+                link.classList.remove('link-dark');
+
+                if (link.classList.contains('dropdown-item')) {
+                    categoryButton.classList.add('active');
+                }
+            }
+        });
+
+        if (urlRoute.includes('/income') || urlRoute.includes('/expense')) {
+            categoryButton.classList.add('active');
+
+        }
+    }
+
     async open(route) {
         window.history.pushState({}, '', route);
         return await this.activateRoute();
@@ -183,8 +217,19 @@ export class Router {
                 let contentBlock = this.contentPageElement;
 
                 if (newRoute.useLayout) {
-                    this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text());
-                    contentBlock = document.getElementById('main-content');
+                    let layout = document.getElementById('main-content');
+                    if (!layout) {
+                        this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text());
+                        layout = document.getElementById('main-content');
+                        SidebarUtils.initLogout(this);
+                    }
+                    contentBlock = layout;
+                    await SidebarUtils.showBalance();
+                    SidebarUtils.showUserName();
+                    this.updateMenu(urlRoute);
+
+                } else {
+                    this.contentPageElement.innerHTML = '';
                 }
                 contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text());
                 if (newRoute.filePathTemplate === '/templates/pages/main.html') {
