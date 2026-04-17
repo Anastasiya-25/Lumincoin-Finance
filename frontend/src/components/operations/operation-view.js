@@ -1,13 +1,13 @@
+import * as bootstrap from 'bootstrap';
 import {HttpUtils} from "../../utils/http-utils.js";
 import {AuthUtils} from "../../utils/auth-utils.js";
 import { Datepicker, DateRangePicker } from 'vanillajs-datepicker';
 import ru from 'vanillajs-datepicker/locales/ru';
 
-
 export class OperationsView {
     constructor(route) {
         this.route = route;
-
+        this.deleteId = null;
         Object.assign(Datepicker.locales, ru);
         this.initDatePicker(this);
 
@@ -15,6 +15,10 @@ export class OperationsView {
         this.initPeriodFilters();
 
         this.getOperations('all').then();
+        const confirmBtn = document.getElementById('confirm-delete');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => this.operationDelete());
+        }
     }
 
     initDatePicker() {
@@ -44,8 +48,6 @@ export class OperationsView {
                 const date = new Date(input.value);
                 link.innerText = date.toLocaleDateString('ru-RU');
             }
-
-            console.log('Выбран интервал:', fromInput.value, '—', toInput.value);
             this.checkIntervalAndRefresh();
         });
     }
@@ -54,7 +56,7 @@ export class OperationsView {
 
         const fromInput = document.getElementById('dateFrom');
         const toInput = document.getElementById('dateTo');
-        // Находим кнопку "Интервал"
+
         const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
 
         const from = fromInput.value;
@@ -103,7 +105,6 @@ export class OperationsView {
     }
 
     showOperations(operations) {
-        console.log(operations);
         const tableElement = document.getElementById('table-body');
         if (tableElement) tableElement.innerHTML = '';
         for (let i = 0; i < operations.length; i++) {
@@ -130,12 +131,42 @@ export class OperationsView {
             trElement.insertCell().innerText = (new Date(operations[i].date)).toLocaleDateString('ru-RU');
             trElement.insertCell().innerText = operations[i].comment;
 
-            trElement.insertCell().innerHTML = '<div class="order-tools">' +
-                '<a href="/operation/edit?id=' + operations[i].id + '" class="fa-solid fa-pen"></a>' +
-                '<a href="/operation/delete?id=' + operations[i].id + '" class="fa-solid fa-trash-can"></a>' + '</div>';
-
+            // trElement.insertCell().innerHTML = '<div class="order-tools">' +
+            //     '<a href="/operation/edit?id=' + operations[i].id + '" class="fa-solid fa-pen"></a>' +
+            //     '<a href="/operation/delete?id=' + operations[i].id + '" class="fa-solid fa-trash-can"></a>' + '</div>';
+            const toolsCell = trElement.insertCell();
+            const toolsDiv = document.createElement('div');
+            toolsDiv.className = 'order-tools';
+            toolsDiv.innerHTML = `<a href="/operation/edit?id=${operations[i].id}" class="fa-solid fa-pen"></a>`;
+            const deleteBtn = document.createElement('a');
+            deleteBtn.href = 'javascript:void(0)';
+            deleteBtn.className = 'fa-solid fa-trash-can';
+            deleteBtn.addEventListener('click', () => {
+                this.deleteId = operations[i].id;
+                const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                myModal.show();
+            });
+            toolsDiv.appendChild(deleteBtn);
+            toolsCell.appendChild(toolsDiv);
             tableElement.appendChild(trElement);
         }
 
+    }
+    async operationDelete() {
+        if (this.deleteId) {
+            const result = await HttpUtils.request('/operations/' + this.deleteId, 'DELETE', true);
+
+            if (result.error) {
+                alert('Возникла ошибка при удалении операции.');
+                return;
+            }
+
+            const modalElement = document.getElementById('deleteModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+
+            const activePeriod = document.querySelector('.period-filter.active').getAttribute('data-period');
+            this.getOperations(activePeriod).then();
+        }
     }
 }

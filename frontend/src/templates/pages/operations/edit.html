@@ -12,38 +12,39 @@
                         <option value="income">доход</option>
                         <option value="expense">расход</option>
                     </select>
-                    <div class="invalid-feedback">Выберите тип операции</div>
+                    <div id="operation-type-error" class="error invalid-feedback">Выберите тип операции</div>
                 </div>
                 <div class="mb-2">
                     <select id="operation-category" class="form-select border-secondary-subtle py-2"
                             style="width: 397px;">
                         <option value="" selected>Категория...</option>
                     </select>
-                    <div class="invalid-feedback">Выберите категорию</div>
+                    <div id="operation-category-error" class="error invalid-feedback">Выберите категорию</div>
                 </div>
                 <div class="mb-2">
                     <input type="number"
                            id="operation-sum"
                            class="form-control border-secondary-subtle py-2"
                            placeholder="500 $" style="width: 397px;">
-                    <div class="invalid-feedback">Введите сумму (минимум 1)</div>
+                    <div id="operation-sum-error" class="error invalid-feedback">Введите сумму (минимум 1)</div>
                 </div>
                 <div class="mb-2">
-                    <input type="text"
+                    <input type="date"
                            id="operation-date"
                            class="form-control border-secondary-subtle py-2"
                            placeholder="11.09.2022" style="width: 397px;">
-                    <div class="invalid-feedback">Укажите дату</div>
+                    <div id="operation-date-error" class="error invalid-feedback">Укажите дату</div>
                 </div>
                 <div class="mb-4">
                     <input type="text"
                            id="operation-comment"
                            class="form-control border-secondary-subtle py-2"
                            placeholder="Комментарий..." style="width: 397px;">
+                    <div id="operation-comment-error" class="error invalid-feedback">Введите комментарий</div>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success px-4">Сохранить</button>
+                    <button type="submit" class="btn btn-success px-4" id="edit-operation">Сохранить</button>
                     <a href="/operations/view" class="btn btn-danger px-4">Отмена</a>
                 </div>
             </form>

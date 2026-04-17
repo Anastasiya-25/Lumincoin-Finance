@@ -1,3 +1,4 @@
+import * as bootstrap from 'bootstrap';
 import {Main} from "./components/main.js";
 import {Login} from "./components/auth/login.js";
 import {SignUp} from "./components/auth/sign-up.js";
@@ -13,26 +14,22 @@ import {OperationCreate} from "./components/operations/operation-create.js";
 import {OperationEdit} from "./components/operations/operation-edit.js";
 import {AuthUtils} from "./utils/auth-utils.js";
 import {SidebarUtils} from "./utils/sidebar-utils.js";
+import {OperationDelete} from "./components/operations/operation-delete.js";
 
 
 export class Router {
     constructor() {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
-        this.isInitialLoad = true;
         window.addEventListener('DOMContentLoaded', this.activateRoute.bind(this));
         window.addEventListener('popstate', this.activateRoute.bind(this));
 
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('a');
-            if (e.target.closest('[data-bs-toggle="dropdown"]')) {
-                return;
-            }
+        document.addEventListener('click', async (e) => {
 
+            const link = e.target.closest('a');
             if (link && link.href && link.origin === window.location.origin) {
                 e.preventDefault();
-
-                this.open(link.pathname).then();
+                await this.open(link.pathname+ link.search);
             }
         });
         this.routes = [
@@ -144,7 +141,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationCreate();
+                    new OperationCreate(this);
                 },
             },
             {
@@ -153,7 +150,13 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationEdit();
+                    new OperationEdit(this);
+                },
+            },
+            {
+                route: '/operation/delete',
+                load: () => {
+                    new OperationDelete(this);
                 },
             },
         ];
@@ -167,18 +170,19 @@ export class Router {
         if (activeLink && activeLink.getAttribute('href') === urlRoute) {
             return;
         }
-
         menuLinks.forEach(link => {
             link.classList.remove('active');
             link.classList.add('link-dark');
+        });
 
+        if (categoryButton) {
+            categoryButton.classList.remove('active');
+        }
+
+        menuLinks.forEach(link => {
             if (link.getAttribute('href') === urlRoute) {
                 link.classList.add('active');
                 link.classList.remove('link-dark');
-
-                if (link.classList.contains('dropdown-item')) {
-                    categoryButton.classList.add('active');
-                }
             }
         });
 
