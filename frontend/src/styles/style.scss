@@ -10,6 +10,11 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+#chartIncome, #chartExpenses {
+  min-height: 400px;
+  max-height: 500px;
+}
+
 .btn-group {
   .dropdown-toggle::after {
     display: none !important;

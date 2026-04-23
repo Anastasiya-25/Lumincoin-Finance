@@ -14,8 +14,6 @@ import {OperationCreate} from "./components/operations/operation-create.js";
 import {OperationEdit} from "./components/operations/operation-edit.js";
 import {AuthUtils} from "./utils/auth-utils.js";
 import {SidebarUtils} from "./utils/sidebar-utils.js";
-import {OperationDelete} from "./components/operations/operation-delete.js";
-
 
 export class Router {
     constructor() {
@@ -39,7 +37,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/main.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new Main();
+                    new Main(this);
                 },
             },
             {
@@ -78,7 +76,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeView();
+                    new IncomeView(this);
                 },
             },
             {
@@ -87,7 +85,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeCreate();
+                    new IncomeCreate(this);
                 },
             },
             {
@@ -96,7 +94,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeEdit();
+                    new IncomeEdit(this);
                 },
             },
             {
@@ -105,7 +103,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseView();
+                    new ExpenseView(this);
                 },
             },
             {
@@ -114,7 +112,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseCreate();
+                    new ExpenseCreate(this);
                 },
             },
             {
@@ -123,7 +121,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseEdit();
+                    new ExpenseEdit(this);
                 },
             },
             {
@@ -236,15 +234,21 @@ export class Router {
                     this.contentPageElement.innerHTML = '';
                 }
                 contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text());
-                if (newRoute.filePathTemplate === '/templates/pages/main.html') {
-                    // Первая диаграмма
-                    const incomeChart = new Main('chartIncome', 'Доходы', [50, 20, 30, 10, 40]);
-                    // Вторая диаграмма
-                    const expenseChart = new Main('chartExpenses', 'Расходы', [10, 40, 15, 25, 10]);
-                }
+                 if (newRoute.filePathTemplate === '/templates/pages/main.html') {
+                //     // Первая диаграмма
+                //     const incomeChart = new Main('chartIncome', 'Доходы', [50, 20, 30, 10, 40]);
+                //     // Вторая диаграмма
+                //     const expenseChart = new Main('chartExpenses', 'Расходы', [10, 40, 15, 25, 10]);
+                //      setTimeout(() => {
+                         new Main(this);
+                     // }, 100);
+                 }
+
             }
             if (newRoute.load && typeof newRoute.load === 'function') {
-                newRoute.load();
+                setTimeout(() => {
+                    newRoute.load();
+                }, 100);
             }
         } else {
             console.log('Not route Found!');

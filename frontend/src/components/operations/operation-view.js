@@ -3,16 +3,19 @@ import {HttpUtils} from "../../utils/http-utils.js";
 import {AuthUtils} from "../../utils/auth-utils.js";
 import { Datepicker, DateRangePicker } from 'vanillajs-datepicker';
 import ru from 'vanillajs-datepicker/locales/ru';
+import {PeriodUtils} from "../../utils/period-utils.js";
 
 export class OperationsView {
     constructor(route) {
         this.route = route;
-        this.deleteId = null;
-        Object.assign(Datepicker.locales, ru);
-        this.initDatePicker(this);
 
-        this.periodButtons = document.querySelectorAll('.period-filter');
-        this.initPeriodFilters();
+        new PeriodUtils(this.getOperations.bind(this));
+        this.deleteId = null;
+        // Object.assign(Datepicker.locales, ru);
+        // this.initDatePicker(this);
+        //
+        // this.periodButtons = document.querySelectorAll('.period-filter');
+        // this.initPeriodFilters();
 
         this.getOperations('all').then();
         const confirmBtn = document.getElementById('confirm-delete');
@@ -21,67 +24,67 @@ export class OperationsView {
         }
     }
 
-    initDatePicker() {
-        const rangeElement = document.getElementById('datepicker-range');
-        const fromLink = document.getElementById('dateFromLink');
-        const toLink = document.getElementById('dateToLink');
-
-        // Инициализация
-        new DateRangePicker(rangeElement, {
-            format: 'yyyy-mm-dd',
-            autohide: true,
-            language: 'ru'
-        });
-
-        fromLink.addEventListener('click', () => document.getElementById('dateFrom').focus());
-        toLink.addEventListener('click', () => document.getElementById('dateTo').focus());
-
-        rangeElement.addEventListener('changeDate', (e) => {
-            const input = e.target; //
-            const fromInput = document.getElementById('dateFrom');
-            const toInput = document.getElementById('dateTo');
-            const fromLink = document.getElementById('dateFromLink');
-            const toLink = document.getElementById('dateToLink');
-
-            const link = (input.id === 'dateFrom') ? fromLink : toLink;
-            if (input.value) {
-                const date = new Date(input.value);
-                link.innerText = date.toLocaleDateString('ru-RU');
-            }
-            this.checkIntervalAndRefresh();
-        });
-    }
-
-    checkIntervalAndRefresh() {
-
-        const fromInput = document.getElementById('dateFrom');
-        const toInput = document.getElementById('dateTo');
-
-        const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
-
-        const from = fromInput.value;
-        const to = toInput.value;
-        if (intervalBtn && intervalBtn.classList.contains('active') && from && to) {
-            this.getOperations('interval', from, to).then();
-        }
-    }
-
-    initPeriodFilters() {
-        this.periodButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-
-                this.periodButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                const period = button.getAttribute('data-period');
-
-                if (period === 'interval') {
-                    this.checkIntervalAndRefresh();
-                } else {
-                    this.getOperations(period).then();
-                }
-            });
-        });
-    }
+    // initDatePicker() {
+    //     const rangeElement = document.getElementById('datepicker-range');
+    //     const fromLink = document.getElementById('dateFromLink');
+    //     const toLink = document.getElementById('dateToLink');
+    //
+    //     // Инициализация
+    //     new DateRangePicker(rangeElement, {
+    //         format: 'yyyy-mm-dd',
+    //         autohide: true,
+    //         language: 'ru'
+    //     });
+    //
+    //     fromLink.addEventListener('click', () => document.getElementById('dateFrom').focus());
+    //     toLink.addEventListener('click', () => document.getElementById('dateTo').focus());
+    //
+    //     rangeElement.addEventListener('changeDate', (e) => {
+    //         const input = e.target; //
+    //         const fromInput = document.getElementById('dateFrom');
+    //         const toInput = document.getElementById('dateTo');
+    //         const fromLink = document.getElementById('dateFromLink');
+    //         const toLink = document.getElementById('dateToLink');
+    //
+    //         const link = (input.id === 'dateFrom') ? fromLink : toLink;
+    //         if (input.value) {
+    //             const date = new Date(input.value);
+    //             link.innerText = date.toLocaleDateString('ru-RU');
+    //         }
+    //         this.checkIntervalAndRefresh();
+    //     });
+    // }
+    //
+    // checkIntervalAndRefresh() {
+    //
+    //     const fromInput = document.getElementById('dateFrom');
+    //     const toInput = document.getElementById('dateTo');
+    //
+    //     const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
+    //
+    //     const from = fromInput.value;
+    //     const to = toInput.value;
+    //     if (intervalBtn && intervalBtn.classList.contains('active') && from && to) {
+    //         this.getOperations('interval', from, to).then();
+    //     }
+    // }
+    //
+    // initPeriodFilters() {
+    //     this.periodButtons.forEach(button => {
+    //         button.addEventListener('click', (e) => {
+    //
+    //             this.periodButtons.forEach(btn => btn.classList.remove('active'));
+    //             button.classList.add('active');
+    //             const period = button.getAttribute('data-period');
+    //
+    //             if (period === 'interval') {
+    //                 this.checkIntervalAndRefresh();
+    //             } else {
+    //                 this.getOperations(period).then();
+    //             }
+    //         });
+    //     });
+    // }
 
     async getOperations(period, dateFrom = null, dateTo = null) {
         let url = `/operations?period=${period}`;
@@ -93,7 +96,7 @@ export class OperationsView {
         const result = await HttpUtils.request(url);
 
         if (result.redirect) {
-            return this.route = result.redirect;
+            return this.route.open(result.redirect);
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
@@ -165,8 +168,16 @@ export class OperationsView {
             const modal = bootstrap.Modal.getInstance(modalElement);
             modal.hide();
 
-            const activePeriod = document.querySelector('.period-filter.active').getAttribute('data-period');
-            this.getOperations(activePeriod).then();
+            const activeBtn = document.querySelector('.period-filter.active');
+            const activePeriod = activeBtn.getAttribute('data-period');
+
+            if (activePeriod === 'interval') {
+                const from = document.getElementById('dateFrom').value;
+                const to = document.getElementById('dateTo').value;
+                this.getOperations(activePeriod, from, to).then();
+            } else {
+                this.getOperations(activePeriod).then();
+            }
         }
     }
 }
