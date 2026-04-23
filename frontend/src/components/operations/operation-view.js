@@ -1,8 +1,5 @@
 import * as bootstrap from 'bootstrap';
 import {HttpUtils} from "../../utils/http-utils.js";
-import {AuthUtils} from "../../utils/auth-utils.js";
-import { Datepicker, DateRangePicker } from 'vanillajs-datepicker';
-import ru from 'vanillajs-datepicker/locales/ru';
 import {PeriodUtils} from "../../utils/period-utils.js";
 
 export class OperationsView {
@@ -11,11 +8,6 @@ export class OperationsView {
 
         new PeriodUtils(this.getOperations.bind(this));
         this.deleteId = null;
-        // Object.assign(Datepicker.locales, ru);
-        // this.initDatePicker(this);
-        //
-        // this.periodButtons = document.querySelectorAll('.period-filter');
-        // this.initPeriodFilters();
 
         this.getOperations('all').then();
         const confirmBtn = document.getElementById('confirm-delete');
@@ -23,68 +15,6 @@ export class OperationsView {
             confirmBtn.addEventListener('click', () => this.operationDelete());
         }
     }
-
-    // initDatePicker() {
-    //     const rangeElement = document.getElementById('datepicker-range');
-    //     const fromLink = document.getElementById('dateFromLink');
-    //     const toLink = document.getElementById('dateToLink');
-    //
-    //     // Инициализация
-    //     new DateRangePicker(rangeElement, {
-    //         format: 'yyyy-mm-dd',
-    //         autohide: true,
-    //         language: 'ru'
-    //     });
-    //
-    //     fromLink.addEventListener('click', () => document.getElementById('dateFrom').focus());
-    //     toLink.addEventListener('click', () => document.getElementById('dateTo').focus());
-    //
-    //     rangeElement.addEventListener('changeDate', (e) => {
-    //         const input = e.target; //
-    //         const fromInput = document.getElementById('dateFrom');
-    //         const toInput = document.getElementById('dateTo');
-    //         const fromLink = document.getElementById('dateFromLink');
-    //         const toLink = document.getElementById('dateToLink');
-    //
-    //         const link = (input.id === 'dateFrom') ? fromLink : toLink;
-    //         if (input.value) {
-    //             const date = new Date(input.value);
-    //             link.innerText = date.toLocaleDateString('ru-RU');
-    //         }
-    //         this.checkIntervalAndRefresh();
-    //     });
-    // }
-    //
-    // checkIntervalAndRefresh() {
-    //
-    //     const fromInput = document.getElementById('dateFrom');
-    //     const toInput = document.getElementById('dateTo');
-    //
-    //     const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
-    //
-    //     const from = fromInput.value;
-    //     const to = toInput.value;
-    //     if (intervalBtn && intervalBtn.classList.contains('active') && from && to) {
-    //         this.getOperations('interval', from, to).then();
-    //     }
-    // }
-    //
-    // initPeriodFilters() {
-    //     this.periodButtons.forEach(button => {
-    //         button.addEventListener('click', (e) => {
-    //
-    //             this.periodButtons.forEach(btn => btn.classList.remove('active'));
-    //             button.classList.add('active');
-    //             const period = button.getAttribute('data-period');
-    //
-    //             if (period === 'interval') {
-    //                 this.checkIntervalAndRefresh();
-    //             } else {
-    //                 this.getOperations(period).then();
-    //             }
-    //         });
-    //     });
-    // }
 
     async getOperations(period, dateFrom = null, dateTo = null) {
         let url = `/operations?period=${period}`;
@@ -102,9 +32,7 @@ export class OperationsView {
         if (result.error || !result.response || (result.response && result.response.error)) {
             return alert('Возникла ошибка при запросе операций. Обратитесь в службу поддержки.');
         }
-
         this.showOperations(result.response);
-
     }
 
     showOperations(operations) {
@@ -134,9 +62,6 @@ export class OperationsView {
             trElement.insertCell().innerText = (new Date(operations[i].date)).toLocaleDateString('ru-RU');
             trElement.insertCell().innerText = operations[i].comment;
 
-            // trElement.insertCell().innerHTML = '<div class="order-tools">' +
-            //     '<a href="/operation/edit?id=' + operations[i].id + '" class="fa-solid fa-pen"></a>' +
-            //     '<a href="/operation/delete?id=' + operations[i].id + '" class="fa-solid fa-trash-can"></a>' + '</div>';
             const toolsCell = trElement.insertCell();
             const toolsDiv = document.createElement('div');
             toolsDiv.className = 'order-tools';

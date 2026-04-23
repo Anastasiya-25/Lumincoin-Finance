@@ -1,7 +1,5 @@
 import {Chart, PieController, ArcElement, Legend, Title, Tooltip} from 'chart.js';
 import {HttpUtils} from "../utils/http-utils.js";
-// import { Datepicker, DateRangePicker } from 'vanillajs-datepicker';
-// import ru from "vanillajs-datepicker/locales/ru";
 import {PeriodUtils} from "../utils/period-utils.js";
 
 Chart.register(PieController, ArcElement, Legend, Title, Tooltip);
@@ -10,11 +8,6 @@ export class Main {
     constructor(route) {
         this.route = route;
         new PeriodUtils(this.getOperations.bind(this));
-
-        // Object.assign(Datepicker.locales, ru);
-        // this.periodButtons = document.querySelectorAll('.period-filter');
-        // this.initDatePicker(this);
-        // this.initPeriodFilters();
 
         this.getOperations('all').then();
     }
@@ -42,68 +35,6 @@ export class Main {
         this.renderChart('chartIncome', 'Доходы', incomeData);
         this.renderChart('chartExpenses', 'Расходы', expenseData);
     }
-
-    // initDatePicker() {
-    //     const rangeElement = document.getElementById('datepicker-range');
-    //     const fromLink = document.getElementById('dateFromLink');
-    //     const toLink = document.getElementById('dateToLink');
-    //
-    //     // Инициализация
-    //     new DateRangePicker(rangeElement, {
-    //         format: 'yyyy-mm-dd',
-    //         autohide: true,
-    //         language: 'ru'
-    //     });
-    //
-    //     fromLink.addEventListener('click', () => document.getElementById('dateFrom').focus());
-    //     toLink.addEventListener('click', () => document.getElementById('dateTo').focus());
-    //
-    //     rangeElement.addEventListener('changeDate', (e) => {
-    //         const input = e.target; //
-    //         const fromInput = document.getElementById('dateFrom');
-    //         const toInput = document.getElementById('dateTo');
-    //         const fromLink = document.getElementById('dateFromLink');
-    //         const toLink = document.getElementById('dateToLink');
-    //
-    //         const link = (input.id === 'dateFrom') ? fromLink : toLink;
-    //         if (input.value) {
-    //             const date = new Date(input.value);
-    //             link.innerText = date.toLocaleDateString('ru-RU');
-    //         }
-    //         this.checkIntervalAndRefresh();
-    //     });
-    // }
-    //
-    // checkIntervalAndRefresh() {
-    //
-    //     const fromInput = document.getElementById('dateFrom');
-    //     const toInput = document.getElementById('dateTo');
-    //
-    //     const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
-    //
-    //     const from = fromInput.value;
-    //     const to = toInput.value;
-    //     if (intervalBtn && intervalBtn.classList.contains('active') && from && to) {
-    //         this.getOperations('interval', from, to).then();
-    //     }
-    // }
-    //
-    // initPeriodFilters() {
-    //     this.periodButtons.forEach(button => {
-    //         button.addEventListener('click', (e) => {
-    //
-    //             this.periodButtons.forEach(btn => btn.classList.remove('active'));
-    //             button.classList.add('active');
-    //             const period = button.getAttribute('data-period');
-    //
-    //             if (period === 'interval') {
-    //                 this.checkIntervalAndRefresh();
-    //             } else {
-    //                 this.getOperations(period).then();
-    //             }
-    //         });
-    //     });
-    // }
 
     process(operations, type) {
         const filtered = operations.filter(op => op.type === type);
