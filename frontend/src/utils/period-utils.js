@@ -19,17 +19,19 @@ export class PeriodUtils {
         const toInput = document.getElementById('dateTo');
         const fromLink = document.getElementById('dateFromLink');
         const toLink = document.getElementById('dateToLink');
+        const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
 
         if (!fromInput || !toInput) return;
 
         const options = {
             format: 'yyyy-mm-dd',
             autohide: true,
-            language: 'ru'
+            language: 'ru',
+            container: 'body'
         };
 
-        const dpFrom = new Datepicker(fromInput, options);
-        const dpTo = new Datepicker(toInput, options);
+        this.dpFrom = new Datepicker(fromInput, options);
+        this.dpTo = new Datepicker(toInput, options);
 
         if (fromLink) {
             fromLink.addEventListener('click', () => fromInput.focus());
@@ -39,15 +41,29 @@ export class PeriodUtils {
         }
 
         fromInput.addEventListener('changeDate', (e) => {
-            if (fromLink && e.detail.date) {
-                fromLink.innerText = e.detail.date.toLocaleDateString('ru-RU');
+            if (e.detail.date) {
+                const dateString = e.detail.date.toLocaleDateString('ru-RU');
+
+                if (intervalBtn) {
+                    this.periodButtons.forEach(btn => btn.classList.remove('active'));
+                    intervalBtn.classList.add('active');
+                }
+                fromLink.innerText = dateString;
+                this.dpFrom.update();
+
             }
             this.checkIntervalAndRefresh();
         });
 
         toInput.addEventListener('changeDate', (e) => {
-            if (toLink && e.detail.date) {
-                toLink.innerText = e.detail.date.toLocaleDateString('ru-RU');
+            if (e.detail.date) {
+                const dateString = e.detail.date.toLocaleDateString('ru-RU');
+                if (intervalBtn) {
+                    this.periodButtons.forEach(btn => btn.classList.remove('active'));
+                    intervalBtn.classList.add('active');
+                }
+                toLink.innerText = dateString;
+                this.dpTo.update();
             }
             this.checkIntervalAndRefresh();
         });
@@ -75,8 +91,15 @@ export class PeriodUtils {
         const toInput = document.getElementById('dateTo');
         const intervalBtn = document.querySelector('.period-filter[data-period="interval"]');
 
-        if (intervalBtn?.classList.contains('active') && fromInput?.value && toInput?.value) {
-            this.callback('interval', fromInput.value, toInput.value);
+        if (intervalBtn && intervalBtn.classList.contains('active')) {
+            const fromValue = fromInput.value;
+            const toValue = toInput.value;
+
+            if (fromValue && toValue) {
+                console.log(`Обновляю график для интервала: ${fromValue} - ${toValue}`);
+                this.callback('interval', fromValue, toValue);
+            }
         }
+
     }
 }

@@ -1,6 +1,7 @@
 import * as bootstrap from 'bootstrap';
 import {HttpUtils} from "../../utils/http-utils.js";
 import {PeriodUtils} from "../../utils/period-utils.js";
+import {SidebarUtils} from "../../utils/sidebar-utils.js";
 
 export class OperationsView {
     constructor(route) {
@@ -65,21 +66,27 @@ export class OperationsView {
             const toolsCell = trElement.insertCell();
             const toolsDiv = document.createElement('div');
             toolsDiv.className = 'order-tools';
-            toolsDiv.innerHTML = `<a href="/operation/edit?id=${operations[i].id}" class="fa-solid fa-pen"></a>`;
+
             const deleteBtn = document.createElement('a');
             deleteBtn.href = 'javascript:void(0)';
-            deleteBtn.className = 'fa-solid fa-trash-can';
+            deleteBtn.className = 'fa-solid fa-trash-can text-dark';
             deleteBtn.addEventListener('click', () => {
                 this.deleteId = operations[i].id;
                 const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
                 myModal.show();
             });
+
             toolsDiv.appendChild(deleteBtn);
+            toolsDiv.insertAdjacentHTML('beforeend', `<a href="/operation/edit?id=${operations[i].id}" class="fa-solid fa-pen text-dark"></a>`);
+
+            // toolsDiv.appendChild(deleteBtn);
             toolsCell.appendChild(toolsDiv);
+
             tableElement.appendChild(trElement);
         }
 
     }
+
     async operationDelete() {
         if (this.deleteId) {
             const result = await HttpUtils.request('/operations/' + this.deleteId, 'DELETE', true);
@@ -103,6 +110,7 @@ export class OperationsView {
             } else {
                 this.getOperations(activePeriod).then();
             }
+            await SidebarUtils.showBalance();
         }
     }
 }

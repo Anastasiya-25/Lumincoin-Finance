@@ -50,21 +50,20 @@ export class Main {
             labels: Object.keys(totals),
             data: Object.values(totals)
         };
-
-        console.log(`Результат обработки для ${type}:`, result);
         return result;
     }
 
     renderChart(canvasId, title, chartData) {
         const canvas = document.getElementById(canvasId);
-        if (!canvas || chartData.labels.length === 0) return;
+        if (!canvas) return;
 
         const existingChart = Chart.getChart(canvas);
+
         if (existingChart) {
             existingChart.destroy();
         }
 
-        if (chartData.labels.length === 0) {
+        if (!chartData || !chartData.data || chartData.data.length === 0) {
             return;
         }
 
