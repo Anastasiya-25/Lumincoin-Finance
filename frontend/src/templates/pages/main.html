@@ -2,15 +2,23 @@
     <h1 class="title mb-xxl-5">Главная</h1>
     <nav class="navbar navbar-light mb-4">
         <form class="container-fluid justify-content-start gap-3 flex-wrap align-items-center p-0">
-            <button class="btn btn-outline-secondary active" type="button">Сегодня</button>
-            <button class="btn btn-outline-secondary" type="button">Неделя</button>
-            <button class="btn btn-outline-secondary" type="button">Месяц</button>
-            <button class="btn btn-outline-secondary" type="button">Год</button>
-            <button class="btn btn-outline-secondary" type="button">Все</button>
-            <button class="btn btn-outline-secondary" type="button">Интервал</button>
-            <div class="d-flex gap-3 align-items-center">
-                <p class="mb-0">с <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
-                <p class="mb-0">по <a href="#" class="pe-auto link-secondary fs-6">Дата</a></p>
+            <button class="btn btn-outline-secondary active period-filter" data-period="today" type="button">Сегодня</button>
+            <button class="btn btn-outline-secondary period-filter" data-period="week" type="button">Неделя</button>
+            <button class="btn btn-outline-secondary period-filter" data-period="month" type="button">Месяц</button>
+            <button class="btn btn-outline-secondary period-filter" data-period="year" type="button">Год</button>
+            <button class="btn btn-outline-secondary period-filter" data-period="all" type="button">Все</button>
+            <button class="btn btn-outline-secondary period-filter" data-period="interval" type="button">Интервал</button>
+            <div id="datepicker-range" class="d-flex gap-3 align-items-center">
+                <div class="d-flex align-items-center gap-1 position-relative">
+                    <span>с</span>
+                    <a href="javascript:void(0)" class="pe-auto link-secondary fs-6 border-bottom border-secondary text-decoration-none" id="dateFromLink">Дата</a>
+                    <input type="text" id="dateFrom" class="position-absolute opacity-0" style="width: 0; height: 0;">
+                </div>
+                <div class="d-flex align-items-center gap-1 position-relative">
+                    <span>по</span>
+                    <a href="javascript:void(0)" class="pe-auto link-secondary fs-6 border-bottom border-secondary text-decoration-none" id="dateToLink">Дата</a>
+                    <input type="text" id="dateTo" class="position-absolute opacity-0" style="width: 0; height: 0;">
+                </div>
             </div>
         </form>
     </nav>

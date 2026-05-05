@@ -1,3 +1,4 @@
+import * as bootstrap from 'bootstrap';
 import {Main} from "./components/main.js";
 import {Login} from "./components/auth/login.js";
 import {SignUp} from "./components/auth/sign-up.js";
@@ -12,7 +13,7 @@ import {OperationsView} from "./components/operations/operation-view.js";
 import {OperationCreate} from "./components/operations/operation-create.js";
 import {OperationEdit} from "./components/operations/operation-edit.js";
 import {AuthUtils} from "./utils/auth-utils.js";
-
+import {SidebarUtils} from "./utils/sidebar-utils.js";
 
 export class Router {
     constructor() {
@@ -21,13 +22,12 @@ export class Router {
         window.addEventListener('DOMContentLoaded', this.activateRoute.bind(this));
         window.addEventListener('popstate', this.activateRoute.bind(this));
 
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('a');
+        document.addEventListener('click', async (e) => {
 
+            const link = e.target.closest('a');
             if (link && link.href && link.origin === window.location.origin) {
                 e.preventDefault();
-
-                this.open(link.pathname).then();
+                await this.open(link.pathname+ link.search);
             }
         });
         this.routes = [
@@ -37,7 +37,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/main.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new Main();
+                    new Main(this);
                 },
             },
             {
@@ -76,7 +76,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeView();
+                    new IncomeView(this);
                 },
             },
             {
@@ -85,7 +85,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeCreate();
+                    new IncomeCreate(this);
                 },
             },
             {
@@ -94,7 +94,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/income/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new IncomeEdit();
+                    new IncomeEdit(this);
                 },
             },
             {
@@ -103,7 +103,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseView();
+                    new ExpenseView(this);
                 },
             },
             {
@@ -112,7 +112,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseCreate();
+                    new ExpenseCreate(this);
                 },
             },
             {
@@ -121,7 +121,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/expense/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new ExpenseEdit();
+                    new ExpenseEdit(this);
                 },
             },
             {
@@ -130,7 +130,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/view.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationsView();
+                    new OperationsView(this);
                 },
             },
             {
@@ -139,7 +139,7 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/create.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationCreate();
+                    new OperationCreate(this);
                 },
             },
             {
@@ -148,15 +148,51 @@ export class Router {
                 filePathTemplate: '/templates/pages/operations/edit.html',
                 useLayout: '/templates/layout.html',
                 load: () => {
-                    new OperationEdit();
+                    new OperationEdit(this);
+                },
+            },
+            {
+                route: '/operation/delete',
+                load: () => {
+                    new OperationDelete(this);
                 },
             },
         ];
     }
 
+    updateMenu(urlRoute) {
+        const menuLinks = document.querySelectorAll('.nav-link, .dropdown-item');
+        const categoryButton = document.querySelector('.dropdown-toggle');
+        const activeLink = document.querySelector('.nav-link.active');
+
+        if (activeLink && activeLink.getAttribute('href') === urlRoute) {
+            return;
+        }
+        menuLinks.forEach(link => {
+            link.classList.remove('active');
+            link.classList.add('link-dark');
+        });
+
+        if (categoryButton) {
+            categoryButton.classList.remove('active');
+        }
+
+        menuLinks.forEach(link => {
+            if (link.getAttribute('href') === urlRoute) {
+                link.classList.add('active');
+                link.classList.remove('link-dark');
+            }
+        });
+
+        if (urlRoute.includes('/income') || urlRoute.includes('/expense')) {
+            categoryButton.classList.add('active');
+
+        }
+    }
+
     async open(route) {
         window.history.pushState({}, '', route);
-        await this.activateRoute();
+        return await this.activateRoute();
     }
 
     async activateRoute() {
@@ -164,10 +200,14 @@ export class Router {
 
         const isAuthPage = urlRoute === '/login' || urlRoute === '/sign-up';
 
-        if (!AuthUtils.getAuthInfo(AuthUtils.accessTokenKey) && !AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey) && !isAuthPage) {
+        const accessToken = AuthUtils.getAuthInfo(AuthUtils.accessTokenKey);
+        const refreshToken = AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey);
+
+        if (!accessToken && !refreshToken && !isAuthPage) {
+            // this.contentPageElement.innerHTML = '';
             window.history.replaceState({}, '', '/login');
-            await this.activateRoute();
-            return;
+            return await this.activateRoute();
+
         }
 
         const newRoute = this.routes.find(item => item.route === urlRoute);
@@ -179,19 +219,36 @@ export class Router {
                 let contentBlock = this.contentPageElement;
 
                 if (newRoute.useLayout) {
-                    this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text());
-                    contentBlock = document.getElementById('main-content');
+                    let layout = document.getElementById('main-content');
+                    if (!layout) {
+                        this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text());
+                        layout = document.getElementById('main-content');
+                        SidebarUtils.initLogout(this);
+                    }
+                    contentBlock = layout;
+                    await SidebarUtils.showBalance();
+                    SidebarUtils.showUserName();
+                    this.updateMenu(urlRoute);
+
+                } else {
+                    this.contentPageElement.innerHTML = '';
                 }
                 contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text());
-                if (newRoute.filePathTemplate === '/templates/pages/main.html') {
-                    // Первая диаграмма
-                    const incomeChart = new Main('chartIncome', 'Доходы', [50, 20, 30, 10, 40]);
-                    // Вторая диаграмма
-                    const expenseChart = new Main('chartExpenses', 'Расходы', [10, 40, 15, 25, 10]);
-                }
+                 if (newRoute.filePathTemplate === '/templates/pages/main.html') {
+                //     // Первая диаграмма
+                //     const incomeChart = new Main('chartIncome', 'Доходы', [50, 20, 30, 10, 40]);
+                //     // Вторая диаграмма
+                //     const expenseChart = new Main('chartExpenses', 'Расходы', [10, 40, 15, 25, 10]);
+                //      setTimeout(() => {
+                         new Main(this);
+                     // }, 100);
+                 }
+
             }
             if (newRoute.load && typeof newRoute.load === 'function') {
-                newRoute.load();
+                setTimeout(() => {
+                    newRoute.load();
+                }, 100);
             }
         } else {
             console.log('Not route Found!');

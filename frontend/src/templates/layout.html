@@ -34,7 +34,7 @@
                         </li>
                     </ul>
 
-                    <div class="btn-group position-relative w-100">
+                    <div class="dropdown btn-group position-relative w-100">
                         <button type="button"
                                 class="btn dropdown-toggle d-flex justify-content-between align-items-center "
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,17 +49,32 @@
                 </div>
                 <div class="mt-auto text-start w-100">
                     <div id="balance" class="text-start mb-4">
-                        Баланс: <a class="link-primary text-decoration-none" id="balance-amount"><span> $</span></a>
+                        Баланс: <a class="link-primary text-decoration-none" id="balance-amount"></a>
                     </div>
                     <div class="border-sidebar"></div>
-                    <a href="/logout" class="d-flex align-items-center link-secondary text-decoration-none mt-4">
+                    <div id="logout-button" class="d-flex align-items-center link-secondary text-decoration-none mt-4"
+                         style="cursor: pointer;"
+                         data-bs-toggle="tooltip" data-bs-placement="right" title="Выйти">
                         <img src="/images/icon.png" class="me-2" alt="Иконка">
                         <p id="user" class="mb-0 text-start">User name</p>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="main-content flex-grow-1" id="main-content"></div>
+    <div class="modal fade" id="logoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <h4 class="mb-4">Вы действительно хотите выйти?</h4>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-danger" id="confirm-logout">Да, выйти</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

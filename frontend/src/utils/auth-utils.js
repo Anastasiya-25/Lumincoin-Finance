@@ -1,12 +1,16 @@
+import config from "../config/config.js";
+
 export class AuthUtils {
     static accessTokenKey = 'accessToken';
     static refreshTokenKey = 'refreshToken';
     static userInfoKey = 'user';
 
-    static setAuthInfo(accessToken, refreshToken, userInfo) {
+    static setAuthInfo(accessToken, refreshToken, userInfo = null) {
         localStorage.setItem(this.accessTokenKey, accessToken);
         localStorage.setItem(this.refreshTokenKey, refreshToken);
-        localStorage.setItem(this.userInfoKey, JSON.stringify(userInfo));
+        if (userInfo) {
+            localStorage.setItem(this.userInfoKey, JSON.stringify(userInfo));
+        }
     }
 
     static removeAuthInfo() {
@@ -16,7 +20,7 @@ export class AuthUtils {
     }
 
     static getAuthInfo(key = null) {
-        if (key && [this.accessTokenKey, this.refreshTokenKey, this.userInfoKey]. includes(key)) {
+        if (key && [this.accessTokenKey, this.refreshTokenKey, this.userInfoKey].includes(key)) {
             return localStorage.getItem(key);
         } else {
             return {
@@ -26,4 +30,31 @@ export class AuthUtils {
             }
         }
     }
+
+    static async updateRefreshToken() {
+        let result = false;
+        const refreshToken = this.getAuthInfo(this.refreshTokenKey);
+        if (refreshToken) {
+            const response = await fetch(config.api + '/refresh', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({refreshToken: refreshToken}),
+            });
+            if (response && response.status === 200) {
+                const token = await response.json();
+                if (token && !token.error) {
+                    this.setAuthInfo(token.accessToken, token.refreshToken);
+                    result = true;
+                }
+            }
+            if (!result) {
+                this.removeAuthInfo();
+            }
+        }
+        return result;
+    }
+
 }

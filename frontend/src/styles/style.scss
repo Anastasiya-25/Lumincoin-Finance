@@ -1,3 +1,4 @@
+@import "../../node_modules/vanillajs-datepicker/dist/css/datepicker-bs5.min.css";
 @font-face {
   font-family: Roboto;
   src: url("../static/fonts/Roboto.woff") format("woff"), url("../static/fonts/Roboto.woff2")  format("woff2");
@@ -7,6 +8,11 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+}
+
+#chartIncome, #chartExpenses {
+  min-height: 400px;
+  max-height: 500px;
 }
 
 .btn-group {
@@ -32,6 +38,10 @@ body {
     margin-left: -16px;
     margin-right: -16px;
     width: auto;
+  }
+  .dropdown-toggle.active {
+    background-color: #0d6efd !important;
+    color: #fff !important;
   }
 }
 
@@ -75,6 +85,11 @@ body {
         font-weight: bold;
         text-transform: lowercase;
       }
+    }
+    .order-tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
   }
 }
