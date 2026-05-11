@@ -1,25 +1,30 @@
 import {Chart, PieController, ArcElement, Legend, Title, Tooltip} from 'chart.js';
-import {HttpUtils} from "../utils/http-utils.js";
-import {PeriodUtils} from "../utils/period-utils.js";
+import {HttpUtils} from "../utils/http-utils";
+import {PeriodUtils} from "../utils/period-utils";
+import type {Router} from "../router";
+import type {ResultResponseType} from "../types/result-response.type";
+import type {ChartDataType} from "../types/chart-data.type";
+import type {OperationPeriodResponseType} from "../types/operation-period-response.type";
 
 Chart.register(PieController, ArcElement, Legend, Title, Tooltip);
 
 export class Main {
-    constructor(route) {
+    readonly route: Router;
+    constructor(route: Router) {
         this.route = route;
         new PeriodUtils(this.getOperations.bind(this));
 
         this.getOperations('all').then();
     }
 
-    async getOperations(period, dateFrom = null, dateTo = null) {
-        let url = '/operations?period=' + period;
+    private async getOperations(period: string, dateFrom?: string | null, dateTo?: string | null): Promise<void> {
+        let url: string = '/operations?period=' + period;
 
         if (period === 'interval' && dateFrom && dateTo) {
             url += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
         }
 
-        const result = await HttpUtils.request(url);
+        const result: ResultResponseType<OperationPeriodResponseType[]> = await HttpUtils.request(url);
 
         if (result.redirect) {
             return this.route.open(result.redirect);
@@ -29,35 +34,34 @@ export class Main {
             return alert("Ошибка загрузки данных для выбранного периода");
         }
 
-        const incomeData = this.process(result.response, 'income');
-        const expenseData = this.process(result.response, 'expense');
+        const incomeData: ChartDataType = this.process(result.response, 'income');
+        const expenseData: ChartDataType = this.process(result.response, 'expense');
 
         this.renderChart('chartIncome', 'Доходы', incomeData);
         this.renderChart('chartExpenses', 'Расходы', expenseData);
     }
 
-    process(operations, type) {
-        const filtered = operations.filter(op => op.type === type);
-        const totals = {};
-        filtered.forEach(op => {
-            const categoryName = op.category;
-            const amount = Number(op.amount);
+    private process(operations: OperationPeriodResponseType[], type: 'income' | 'expense') {
+        const filtered: OperationPeriodResponseType[] = operations.filter((op: OperationPeriodResponseType): boolean => op.type === type);
+        const totals: Record<string, number> = {};
+        filtered.forEach((op: OperationPeriodResponseType): void => {
+            const categoryName: string = op.category;
+            const amount: number = Number(op.amount);
             if (!isNaN(amount)) {
                 totals[categoryName] = (totals[categoryName] || 0) + amount;
             }
         });
-        const result = {
+        return {
             labels: Object.keys(totals),
-            data: Object.values(totals)
+            data: Object.values(totals) as number[]
         };
-        return result;
     }
 
-    renderChart(canvasId, title, chartData) {
-        const canvas = document.getElementById(canvasId);
+    private renderChart(canvasId: string, title: string, chartData: ChartDataType): void {
+        const canvas = document.getElementById(canvasId)as HTMLCanvasElement | null;
         if (!canvas) return;
 
-        const existingChart = Chart.getChart(canvas);
+        const existingChart: Chart | undefined = Chart.getChart(canvas);
 
         if (existingChart) {
             existingChart.destroy();

@@ -1,8 +1,10 @@
-import {AuthUtils} from "../../utils/auth-utils.js";
-import {HttpUtils} from "../../utils/http-utils.js";
+import {AuthUtils} from "../../utils/auth-utils";
+import {HttpUtils} from "../../utils/http-utils";
+import type {Router} from "../../router";
 
 export class Logout {
-    constructor(router) {
+    readonly router: Router;
+    constructor(router: Router) {
         this.router = router;
 
         if (AuthUtils.getAuthInfo(AuthUtils.accessTokenKey) || AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey)) {
@@ -11,7 +13,7 @@ export class Logout {
         this.logout().then();
     }
 
-    async logout() {
+    private async logout(): Promise<void> {
          await HttpUtils.request('/logout', 'POST', false,
             {
                 refreshToken: AuthUtils.getAuthInfo(AuthUtils.refreshTokenKey)

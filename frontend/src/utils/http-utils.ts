@@ -1,14 +1,17 @@
-import config from "../config/config.js";
-import {AuthUtils} from "./auth-utils.js";
+import config from "../config/config";
+import {AuthUtils} from "./auth-utils";
+import type {ResultResponseType} from "../types/result-response.type";
 
 export class HttpUtils {
-    static async request(url, method = "GET", useAuth = true, body = null) {
-        const result = {
+
+    public static async request<T = any>(url: string, method: string = "GET", useAuth: boolean = true, body: any = null):
+        Promise<ResultResponseType<T>> {
+        const result: ResultResponseType<T> = {
             error: false,
             response: null
         }
 
-        const params = {
+        const params: RequestInit = {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -16,17 +19,17 @@ export class HttpUtils {
             },
         }
 
-        let token = null;
+        let token: string | null = null;
         if (useAuth) {
-            token = AuthUtils.getAuthInfo(AuthUtils.accessTokenKey);
+            token = AuthUtils.getAuthInfo(AuthUtils.accessTokenKey) as string | null;
             if (token) {
-                params.headers['x-auth-token'] = token;
+                (params.headers as Record<string, string>)['x-auth-token'] = token;
             }
         }
         if (body) {
             params.body = JSON.stringify(body);
         }
-        let response = null;
+        let response: Response | null = null;
 
         try {
             response = await fetch(config.api + url, params);
@@ -42,7 +45,7 @@ export class HttpUtils {
                 if (!token) {
                     result.redirect = '/login';
                 } else {
-                    const updateTokenResult = await AuthUtils.updateRefreshToken();
+                    const updateTokenResult: boolean = await AuthUtils.updateRefreshToken();
                     if (updateTokenResult) {
                         console.log("REFRESH SUCCESS", updateTokenResult);
                         return await this.request(url, method, useAuth, body);
